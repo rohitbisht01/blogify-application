@@ -1,14 +1,13 @@
 const express = require("express");
-const { registerUser, userLogin, userLogout } = require("../controllers/user");
+const {
+  registerUser,
+  userLogin,
+  userLogout,
+  profile,
+} = require("../controllers/user");
 const router = express.Router();
 
-// router.get("/", (req, res) => {
-//   console.log(req.cookies);
-//   res.status(200).json({
-//     message: "cookie checking",
-//   });
-// });
-
+router.get("/profile", profile);
 router.post("/register", registerUser);
 router.post("/login", userLogin);
 router.get("/logout", userLogout);

@@ -73,6 +73,9 @@ const userLogin = async (req, res) => {
       });
     }
 
+    // Remove the password before sending the response
+    const { password: _, ...safeUser } = user._doc;
+
     // generate token and store it in cookies
     const token = jwt.sign(
       {
@@ -94,7 +97,7 @@ const userLogin = async (req, res) => {
       .json({
         success: true,
         message: "Logged in successfully",
-        user,
+        user: safeUser,
       });
   } catch (error) {
     console.log("Error while logging", error);
@@ -120,4 +123,25 @@ const userLogout = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, userLogin, userLogout };
+const profile = async (req, res) => {
+  try {
+    const { token } = req.cookies;
+
+    const decodedToken = jwt.decode(token, process.env.JWT_SECRET);
+    req.user = decodedToken;
+    console.log("decoded", decodedToken);
+
+    res.status(200).json({
+      success: true,
+      user: decodedToken,
+    });
+  } catch (error) {
+    console.log("Error getting current user", error);
+    res.status(400).json({
+      success: false,
+      message: "Error getting profile user",
+    });
+  }
+};
+
+module.exports = { registerUser, userLogin, userLogout, profile };
