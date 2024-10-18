@@ -4,6 +4,7 @@ import MainBlog from "./components/MainBlog";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { checkAuthentication } from "./store/user-slice";
+import CreateBlog from "./pages/CreateBlog";
 
 const App = () => {
   const { isAuthenticated, isLoading, user } = useSelector(
@@ -22,6 +23,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<HomePage />}>
         <Route index element={<MainBlog />} />
+        <Route path="/create-blog" element={<CreateBlog />} />
       </Route>
     </Routes>
   );

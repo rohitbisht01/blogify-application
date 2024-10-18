@@ -18,8 +18,14 @@ import {
   registerUserAction,
 } from "@/store/user-slice";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
+
   const { isAuthenticated, isLoading, user } = useSelector(
     (state) => state.user
   );
@@ -29,13 +35,26 @@ const Header = () => {
   return (
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-3xl font-bold cursor-pointer">Blogify</h1>
+        <h1
+          className="text-3xl font-bold cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          Blogify
+        </h1>
       </div>
 
       <div className="flex items-center gap-5">
         {isAuthenticated ? (
           <div className="flex items-center gap-5">
             {user.username}
+            {pathname === "/create-blog" ? null : (
+              <Button
+                onClick={() => navigate("/create-blog")}
+                variant="outline"
+              >
+                Write Blog
+              </Button>
+            )}
             <LogoutComponent />
           </div>
         ) : (
@@ -67,7 +86,12 @@ const LogoutComponent = () => {
 
   return (
     <div onClick={handleLogout}>
-      <Button variant="outline">Logout</Button>
+      <Button className="sm:block md:hidden" variant="outline">
+        <LogOut />
+      </Button>
+      <Button variant="outline" className="hidden lg:block md:block">
+        Logout
+      </Button>
     </div>
   );
 };
