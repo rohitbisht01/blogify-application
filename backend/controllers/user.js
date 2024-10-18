@@ -151,7 +151,11 @@ const userLogout = async (req, res) => {
 const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
-  // console.log(authHeader);
+  // console.log("req.headers", req.headers);
+
+  // const tokenFromCookie = req.cookies.token;
+  // console.log("tokenFromCookie", tokenFromCookie);
+  console.log(authHeader);
 
   if (!token)
     return res.status(401).json({
@@ -159,9 +163,16 @@ const authMiddleware = async (req, res, next) => {
       message: "Unauthorized user",
     });
 
+  // if (!tokenFromCookie)
+  //   return res.status(401).json({
+  //     success: false,
+  //     message: "Unauthorized user",
+  //   });
+
   try {
     // decode the token
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    // const decodedToken = jwt.verify(tokenFromCookie, process.env.JWT_SECRET);
     req.user = decodedToken;
     next();
   } catch (error) {

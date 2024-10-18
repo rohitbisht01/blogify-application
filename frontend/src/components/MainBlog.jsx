@@ -1,15 +1,27 @@
+import { getAllBlogsAction } from "@/store/blog-slice";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 const MainBlog = () => {
+  const dispatch = useDispatch();
+  const { blogLists, isLoading } = useSelector((state) => state.blog);
+
+  useEffect(() => {
+    dispatch(getAllBlogsAction());
+  }, [dispatch]);
+
+  if (isLoading) return <div>loading...</div>;
+
   return (
     <div>
-      <Test />
-      {/* <Test />
-      <Test />
-      <Test /> */}
+      {blogLists.map((blog) => {
+        return <BlogPost key={blog._id} blog={blog} />;
+      })}
     </div>
   );
 };
 
-const Test = () => {
+const BlogPost = ({ blog }) => {
   return (
     <div
       className="my-10"
@@ -24,42 +36,21 @@ const Test = () => {
           }}
         >
           <img
-            src="https://images.freeimages.com/images/large-previews/39c/winter-rosehips-1405800.jpg?fmt=webp&h=350"
+            src={blog.cover}
             alt="Blog Image"
             className="object-cover h-full w-full rounded-md"
             loading="lazy"
           />
         </div>
         <div className="col-span-2">
-          <h1 className="text-xl font-bold">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga,
-            minus.
-          </h1>
-          <div className="flex items-center gap-3 text-gray-600 my-1">
-            <p>@rohitbisht</p>
-            <p>@date</p>
-            <p>@time</p>
+          <h1 className="text-xl font-bold">{blog.title}</h1>
+          <div className="flex items-center gap-3 text-gray-600 my-1 text-sm">
+            <p>{blog.author.username}</p>
+            <p>{new Date(blog.createdAt).toLocaleDateString()}</p>
+            <p>{new Date(blog.createdAt).toLocaleTimeString()}</p>
           </div>
 
-          <div>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi
-            expedita dolore atque reprehenderit facere consequatur praesentium
-            repellat. Veritatis delectus eos, iste nisi unde fugiat illum porro
-            repudiandae similique aspernatur libero deleniti. Iure numquam et
-            magni quis velit mollitia, animi quo dolore quod quia alias
-            {/* perspiciatis quos quas ex dicta, a recusandae accusamus veniam odit
-            pariatur dignissimos! Nisi nobis ducimus hic. Illum, quibusdam.
-            Omnis, nesciunt! Quos, eaque. Commodi veniam magni harum, accusamus
-            hic nam debitis praesentium ea quo consequuntur ratione dolorem
-            necessitatibus? Blanditiis et aliquam sequi adipisci. Praesentium */}
-            {/* vitae quam placeat. Ad omnis soluta mollitia odit optio eligendi
-            voluptas exercitationem nobis, adipisci consequatur! Sed dictaum,
-            accusamus hic nam debitis praesentium ea quo consequuntur ratione
-            dolorem necessitatibus? Blanditiis et aliquam sequi adipisci.
-            Praesentium vitae quam placeat. Ad omnis soluta mollitia odit optio
-            eligendi voluptas exercitationem nobis, adipisci consequatur! Sed */}
-            dicta
-          </div>
+          <div>{blog.content}</div>
         </div>
       </div>
     </div>

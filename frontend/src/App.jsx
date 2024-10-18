@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { checkAuthentication } from "./store/user-slice";
 
 const App = () => {
-  const { isAuthenticated, isLoading, user, token } = useSelector(
+  const { isAuthenticated, isLoading, user } = useSelector(
     (state) => state.user
   );
   const dispatch = useDispatch();
