@@ -30,10 +30,13 @@ const registerUser = async (req, res) => {
       email,
     });
 
+    // Remove the password before sending the response
+    const { password: _, ...safeUser } = newUser._doc;
+
     res.status(201).json({
       success: true,
       message: "User created",
-      newUser,
+      safeUser,
     });
   } catch (error) {
     console.log("Error registering user", error);
@@ -98,6 +101,7 @@ const userLogin = async (req, res) => {
         success: true,
         message: "Logged in successfully",
         user: safeUser,
+        token,
       });
   } catch (error) {
     console.log("Error while logging", error);
@@ -123,25 +127,56 @@ const userLogout = async (req, res) => {
   }
 };
 
-const profile = async (req, res) => {
-  try {
-    const { token } = req.cookies;
+// const profile = async (req, res) => {
+//   try {
+//     const { token } = req.cookies;
 
-    const decodedToken = jwt.decode(token, process.env.JWT_SECRET);
-    req.user = decodedToken;
-    console.log("decoded", decodedToken);
+//     const decodedToken = jwt.decode(token, process.env.JWT_SECRET);
+//     req.user = decodedToken;
+//     console.log("decoded", decodedToken);
 
-    res.status(200).json({
-      success: true,
-      user: decodedToken,
-    });
-  } catch (error) {
-    console.log("Error getting current user", error);
-    res.status(400).json({
+//     res.status(200).json({
+//       success: true,
+//       user: decodedToken,
+//     });
+//   } catch (error) {
+//     console.log("Error getting current user", error);
+//     res.status(400).json({
+//       success: false,
+//       message: "Error getting profile user",
+//     });
+//   }
+// };
+
+const authMiddleware = async (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  // console.log(authHeader);
+
+  if (!token)
+    return res.status(401).json({
       success: false,
-      message: "Error getting profile user",
+      message: "Unauthorized user",
+    });
+
+  try {
+    // decode the token
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized user",
     });
   }
 };
 
-module.exports = { registerUser, userLogin, userLogout, profile };
+module.exports = {
+  registerUser,
+  userLogin,
+  userLogout,
+  // profile,
+  authMiddleware,
+};

@@ -11,11 +11,21 @@ import {
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useState } from "react";
-import { url } from "@/lib/config";
-import axios from "axios";
 import toast from "react-hot-toast";
+import {
+  loginUserAction,
+  logoutAction,
+  registerUserAction,
+} from "@/store/user-slice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
+  const { isAuthenticated, isLoading, user } = useSelector(
+    (state) => state.user
+  );
+
+  if (isLoading) return <div>loading..</div>;
+
   return (
     <div className="flex items-center justify-between">
       <div>
@@ -23,88 +33,99 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-5">
-        <AuthComponent
-          title="Login"
-          buttonLabel="Login"
-          description="Enter your email below to login to your account."
-        />
-        <AuthComponent
-          title="Register"
-          buttonLabel="Register"
-          description="Enter your credentials below to register your account."
-        />
+        {isAuthenticated ? (
+          <div className="flex items-center gap-5">
+            {user.username}
+            <LogoutComponent />
+          </div>
+        ) : (
+          <>
+            <LoginAuthComponent />
+            <RegisterAuthComponent />
+          </>
+        )}
       </div>
     </div>
   );
 };
 
-const AuthComponent = ({ title, buttonLabel, description }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const LogoutComponent = () => {
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(logoutAction())
+      .then((response) => {
+        if (response.payload.success) {
+          toast.success("Successfull logged out");
+        } else {
+          toast.error("Logout failed");
+        }
+      })
+      .catch((error) => {
+        toast.error("An error occurred during logout");
+      });
+  };
+
+  return (
+    <div onClick={handleLogout}>
+      <Button variant="outline">Logout</Button>
+    </div>
+  );
+};
+
+const RegisterAuthComponent = () => {
+  const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // const loginUser = async (body) => {
-  //   try {
-  //     const response = await axios.post(`${url}/api/v1/user/login`, body);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.log("Error logging in", error);
-  //   }
-  // };
+  const dispatch = useDispatch();
 
-  // const registerUser = async (body) => {
-  //   try {
-  //     const response = await axios.post(`${url}/api/v1/user/register`, body);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.log("Error registering user", error);
-  //   }
-  // };
-
-  const handleSubmit = async (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-    // try {
-    //   const body = { email, password };
-    //   const result = await loginUser(body);
-    //   console.log(result.user);
-
-    //   if (result.success) {
-    //     toast(`${result.user.username} is logged in`);
-    //     setEmail("");
-    //     setPassword("");
-    //     setIsOpen(false);
-    //   }
-    // } catch (error) {
-    //   console.log("Error", error);
-    // }
+    try {
+      dispatch(registerUserAction({ username, email, password })).then(
+        (response) => {
+          if (response.payload.success) {
+            toast.success("User registered");
+            setEmail("");
+            setUsername("");
+            setPassword("");
+            setOpen(false);
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error("Error registering user");
+    }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">{buttonLabel}</Button>
+        <Button variant="outline">Register</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleRegister}>
           <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
+            <DialogTitle>Register</DialogTitle>
+            <DialogDescription>
+              {"Enter your credentials below to register your account"}
+            </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            {title === "Register" && (
-              <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  type="username"
-                  placeholder="test-user"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-              </div>
-            )}
+            <div className="grid gap-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="username"
+                placeholder="test-user"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -129,7 +150,77 @@ const AuthComponent = ({ title, buttonLabel, description }) => {
           </div>
           <DialogFooter>
             <Button className="flex justify-center w-full" type="submit">
-              {title}
+              Register
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const LoginAuthComponent = () => {
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+      dispatch(loginUserAction({ email, password })).then((result) => {
+        if (result.payload.success) {
+          toast.success(`${result.payload.user.username} is logged in`);
+          setEmail("");
+          setPassword("");
+          setOpen(false);
+        }
+      });
+    } catch (error) {
+      console.log("Error", error);
+      toast.error("Error logging in");
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline">Login</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>Login</DialogTitle>
+            <DialogDescription>
+              {"Enter your email below to login to your account."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="test@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button className="flex justify-center w-full" type="submit">
+              Login
             </Button>
           </DialogFooter>
         </form>

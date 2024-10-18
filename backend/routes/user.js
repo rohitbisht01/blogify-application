@@ -3,11 +3,20 @@ const {
   registerUser,
   userLogin,
   userLogout,
-  profile,
+  authMiddleware,
 } = require("../controllers/user");
 const router = express.Router();
 
-router.get("/profile", profile);
+// router.get("/profile", profile);
+router.get("/profile", authMiddleware, (req, res) => {
+  const user = req.user;
+  res.status(200).json({
+    success: true,
+    message: "User is authenticated",
+    user,
+  });
+});
+
 router.post("/register", registerUser);
 router.post("/login", userLogin);
 router.get("/logout", userLogout);
