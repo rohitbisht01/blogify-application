@@ -20,6 +20,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
+import Loader from "./Loader";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const Header = () => {
     (state) => state.user
   );
 
-  if (isLoading) return <div>loading..</div>;
+  if (isLoading) return <Loader />;
 
   return (
     <div className="flex items-center justify-between">

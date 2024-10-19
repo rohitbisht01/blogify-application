@@ -1,5 +1,5 @@
 // Importing helper modules
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 // Importing core components
 import QuillEditor from "react-quill";
@@ -13,11 +13,6 @@ const Editor = ({ content, setContent }) => {
 
   // Editor ref
   const quill = useRef();
-
-  // Handler to handle button clicked
-  function handler() {
-    console.log(content);
-  }
 
   const imageHandler = useCallback(() => {
     const input = document.createElement("input");
@@ -94,7 +89,6 @@ const Editor = ({ content, setContent }) => {
         modules={modules}
         onChange={(value) => setContent(value)}
       />
-      {/* <button onClick={handler}>Submit</button> */}
     </Card>
   );
 };

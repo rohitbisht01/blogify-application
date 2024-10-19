@@ -22,8 +22,16 @@ export const getAllBlogsAction = createAsyncThunk("/blogs", async () => {
 export const createBlogAction = createAsyncThunk(
   "/create-blog",
   async (blogBody, { rejectWithValue }) => {
+    const token = sessionStorage.getItem("token");
+
     try {
-      const response = await axios.post(`${url}/api/v1/blog/create`, blogBody);
+      const response = await axios.post(`${url}/api/v1/blog/create`, blogBody, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Cache-Control": "no-store,no-cache,must-revalidate,proxy-revalidate",
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return response.data;
     } catch (error) {
       console.log("Error creating blog", error);

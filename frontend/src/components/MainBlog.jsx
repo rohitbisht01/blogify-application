@@ -1,6 +1,7 @@
 import { getAllBlogsAction } from "@/store/blog-slice";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from "./Loader";
 
 const MainBlog = () => {
   const dispatch = useDispatch();
@@ -10,7 +11,7 @@ const MainBlog = () => {
     dispatch(getAllBlogsAction());
   }, [dispatch]);
 
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading) return <Loader />;
 
   return (
     <div>
@@ -50,7 +51,9 @@ const BlogPost = ({ blog }) => {
             <p>{new Date(blog.createdAt).toLocaleTimeString()}</p>
           </div>
 
-          <div>{blog.content}</div>
+          <div>
+            <div dangerouslySetInnerHTML={{ __html: blog.summary }} />
+          </div>
         </div>
       </div>
     </div>
