@@ -20,7 +20,7 @@ const Footer = () => {
   return (
     <div className="">
       <div className="flex items-center justify-between flex-col sm:flex-col md:flex-row">
-        <div className="font-bold text-2xl">
+        <div className="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 cursor-pointer">
           <Link to={"/"}>Blogify</Link>
         </div>
 

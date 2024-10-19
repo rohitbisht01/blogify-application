@@ -1,5 +1,13 @@
 import { Button } from "./ui/button";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -19,58 +27,22 @@ import {
 } from "@/store/user-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { AlignJustify, LogOut } from "lucide-react";
 import Loader from "./Loader";
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
+  const dispatch = useDispatch();
 
   const { isAuthenticated, isLoading, user } = useSelector(
     (state) => state.user
   );
 
-  if (isLoading) return <Loader />;
+  const [isRegisterDialogOpen, setIsRegisterDialogOpen] = useState(false);
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
 
-  return (
-    <div className="flex items-center justify-between">
-      <div>
-        <h1
-          className="text-3xl font-bold cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          Blogify
-        </h1>
-      </div>
-
-      <div className="flex items-center gap-5">
-        {isAuthenticated ? (
-          <div className="flex items-center gap-5">
-            {user.username}
-            {pathname === "/create-blog" ? null : (
-              <Button
-                onClick={() => navigate("/create-blog")}
-                variant="outline"
-              >
-                Write Blog
-              </Button>
-            )}
-            <LogoutComponent />
-          </div>
-        ) : (
-          <>
-            <LoginAuthComponent />
-            <RegisterAuthComponent />
-          </>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const LogoutComponent = () => {
-  const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logoutAction())
       .then((response) => {
@@ -85,6 +57,95 @@ const LogoutComponent = () => {
       });
   };
 
+  if (isLoading) return <Loader />;
+
+  return (
+    <div className="flex items-center justify-between">
+      <div>
+        <h1
+          className="text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          Blogify
+        </h1>
+      </div>
+
+      <div className="flex items-center gap-5">
+        <div className="block md:hidden ">
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button variant="outline">
+                <AlignJustify />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {isAuthenticated ? (
+                <>
+                  <DropdownMenuItem className="cursor-pointer">
+                    {user.username}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => setIsLoginDialogOpen(true)}
+                  >
+                    Login
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => setIsRegisterDialogOpen(true)}
+                  >
+                    Register
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        <div className="hidden md:flex items-center gap-4">
+          {isAuthenticated ? (
+            <div className="flex items-center gap-5">
+              {user.username}
+              {pathname === "/create-blog" ? null : (
+                <Button
+                  onClick={() => navigate("/create-blog")}
+                  variant="outline"
+                >
+                  Write Blog
+                </Button>
+              )}
+              <LogoutComponent handleLogout={handleLogout} />
+            </div>
+          ) : (
+            <>
+              <LoginAuthComponent
+                open={isLoginDialogOpen}
+                setOpen={setIsLoginDialogOpen}
+              />
+              <RegisterAuthComponent
+                open={isRegisterDialogOpen}
+                setOpen={setIsRegisterDialogOpen}
+              />
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const LogoutComponent = ({ handleLogout }) => {
   return (
     <div onClick={handleLogout}>
       <Button className="sm:block md:hidden" variant="outline">
@@ -97,8 +158,8 @@ const LogoutComponent = () => {
   );
 };
 
-const RegisterAuthComponent = () => {
-  const [open, setOpen] = useState(false);
+const RegisterAuthComponent = ({ open, setOpen }) => {
+  // const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -184,9 +245,9 @@ const RegisterAuthComponent = () => {
   );
 };
 
-const LoginAuthComponent = () => {
+const LoginAuthComponent = ({ open, setOpen }) => {
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

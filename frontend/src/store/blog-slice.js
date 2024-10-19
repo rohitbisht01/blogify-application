@@ -42,6 +42,22 @@ export const createBlogAction = createAsyncThunk(
   }
 );
 
+// blog by id action
+export const getBlogByIdAction = createAsyncThunk(
+  "/blog/id",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${url}/api/v1/blog/${id}`);
+      return response.data;
+    } catch (error) {
+      console.log("Error getting blog by id", error);
+      return rejectWithValue({
+        message: error.response?.data?.message || "Blog failed",
+      });
+    }
+  }
+);
+
 const blogSlice = createSlice({
   name: "blog",
   initialState,
@@ -73,6 +89,20 @@ const blogSlice = createSlice({
       .addCase(createBlogAction.rejected, (state, action) => {
         state.isLoading = false;
         //   state.blogLists = [];
+      });
+
+    // blog by id
+    builder
+      .addCase(getBlogByIdAction.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getBlogByIdAction.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.blog = action.payload.blog;
+      })
+      .addCase(getBlogByIdAction.rejected, (state, action) => {
+        state.isLoading = false;
+        state.blog = null;
       });
   },
 });

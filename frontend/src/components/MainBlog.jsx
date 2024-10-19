@@ -1,7 +1,8 @@
 import { getAllBlogsAction } from "@/store/blog-slice";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "./Loader";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const MainBlog = () => {
   const dispatch = useDispatch();
@@ -23,9 +24,11 @@ const MainBlog = () => {
 };
 
 const BlogPost = ({ blog }) => {
+  const navigate = useNavigate();
   return (
     <div
-      className="my-10"
+      onClick={() => navigate(`/blog/${blog._id}`)}
+      className="my-10 cursor-pointer"
       style={{
         height: 200,
       }}
@@ -45,14 +48,16 @@ const BlogPost = ({ blog }) => {
         </div>
         <div className="col-span-2">
           <h1 className="text-xl font-bold">{blog.title}</h1>
-          <div className="flex items-center gap-3 text-gray-600 my-1 text-sm">
+          <div className="flex sm:flex-row flex-col items-center gap-3 text-gray-600 my-1 text-sm">
             <p>{blog.author.username}</p>
-            <p>{new Date(blog.createdAt).toLocaleDateString()}</p>
-            <p>{new Date(blog.createdAt).toLocaleTimeString()}</p>
+            <div className="hidden sm:flex gap-2">
+              <p>{new Date(blog.createdAt).toLocaleDateString()}</p>
+              <p>{new Date(blog.createdAt).toLocaleTimeString()}</p>
+            </div>
           </div>
 
-          <div>
-            <div dangerouslySetInnerHTML={{ __html: blog.summary }} />
+          <div className="h-16">
+            <p className="line-clamp-3">{blog.summary}</p>
           </div>
         </div>
       </div>

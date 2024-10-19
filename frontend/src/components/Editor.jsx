@@ -9,8 +9,6 @@ import "react-quill/dist/quill.snow.css";
 import { Card } from "./ui/card";
 
 const Editor = ({ content, setContent }) => {
-  // Editor state
-
   // Editor ref
   const quill = useRef();
 
