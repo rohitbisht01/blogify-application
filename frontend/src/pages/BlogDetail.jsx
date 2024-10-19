@@ -17,7 +17,7 @@ const BlogDetail = () => {
   if (isLoading || !blog) return <Loader />;
 
   return (
-    <div className="mt-10">
+    <div className="my-10">
       <div className="flex flex-col gap-4 items-center justify-center">
         <h1 className="text-2xl font-bold">{blog.title}</h1>
         <div className="mt-2 flex flex-col sm:flex-col md:flex-row items-center justify-center gap-2 text-sm text-gray-500">

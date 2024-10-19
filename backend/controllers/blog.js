@@ -22,6 +22,42 @@ const getAllBlogs = async (req, res) => {
   }
 };
 
+const blogDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Id is missing",
+      });
+    }
+
+    const blog = await Blog.findById(id).populate(
+      "author",
+      "username email createdAt"
+    );
+
+    if (!blog) {
+      return res.status(400).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      blog,
+    });
+  } catch (error) {
+    console.log("Error getting blog details by id", error);
+    res.status(400).json({
+      success: false,
+      message: "Error getting blog by id",
+    });
+  }
+};
+
 const createBlog = async (req, res) => {
   try {
     const { title, summary, content } = req.body;
@@ -63,4 +99,4 @@ const createBlog = async (req, res) => {
   }
 };
 
-module.exports = { getAllBlogs, createBlog };
+module.exports = { getAllBlogs, createBlog, blogDetails };
