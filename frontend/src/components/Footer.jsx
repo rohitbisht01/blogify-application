@@ -20,8 +20,10 @@ const Footer = () => {
   return (
     <div className="">
       <div className="flex items-center justify-between flex-col sm:flex-col md:flex-row">
-        <div className="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 cursor-pointer">
-          <Link to={"/"}>Blogify</Link>
+        <div className="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 cursor-pointer mb-4 sm:mb-0">
+          <Link to={"/"} className="">
+            Blogify
+          </Link>
         </div>
 
         <div className="flex flex-row gap-4">
@@ -48,6 +50,10 @@ const Footer = () => {
         </Link>
         . All Rights Reserved.
       </div>
+      {/* <div className="flex justify-center text-sm text-gray-500 mt-2">
+        Built by{" "}
+        <span className="mx-1 hover:text-gray-900 cursor-pointer">Rohit</span>
+      </div> */}
     </div>
   );
 };

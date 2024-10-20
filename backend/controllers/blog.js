@@ -105,7 +105,64 @@ const createBlog = async (req, res) => {
     });
   } catch (error) {
     console.log("Error creating blog", error);
+    res.status(400).json({
+      success: false,
+      message: "Error creating blog",
+    });
   }
 };
 
-module.exports = { getAllBlogs, createBlog, blogDetails };
+const updateBlog = async (req, res) => {
+  try {
+    const { title, summary, content, cover } = req.body;
+    const { blogId } = req.params;
+
+    if (!blogId) {
+      return res.status(400).json({
+        success: false,
+        message: "Blog Id is missing",
+      });
+    }
+
+    // if (!title || !summary || !content || !req.file) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Fileds are missing",
+    //   });
+    // }
+
+    let cloudinaryUrl;
+
+    // Only upload new image if it exists
+    if (req.file) {
+      const base64 = Buffer.from(req.file.buffer).toString("base64");
+      const imageUrl = "data:" + req.file.mimetype + ";base64," + base64;
+      cloudinaryUrl = await uploadToCloudinary(imageUrl);
+    }
+
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      {
+        title,
+        summary,
+        content,
+        cover: cloudinaryUrl ? cloudinaryUrl.url : cover,
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Blog updated",
+      blog: blog,
+    });
+  } catch (error) {
+    console.log("Error updating blog", error);
+    res.status(400).json({
+      success: false,
+      message: "Error updating blog",
+    });
+  }
+};
+
+module.exports = { getAllBlogs, createBlog, blogDetails, updateBlog };

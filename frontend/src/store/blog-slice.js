@@ -65,6 +65,35 @@ export const getBlogByIdAction = createAsyncThunk(
   }
 );
 
+// update blog action
+export const updateBlogAction = createAsyncThunk(
+  "/update-blog",
+  async ({ blogId, blogBody }, { rejectWithValue }) => {
+    const token = sessionStorage.getItem("token");
+
+    try {
+      const response = await axios.put(
+        `${url}/api/v1/blog/update/${blogId}`,
+        blogBody,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Cache-Control":
+              "no-store,no-cache,must-revalidate,proxy-revalidate",
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error updating blog", error);
+      return rejectWithValue({
+        message: error.response?.data?.message || "Blog Updating failed",
+      });
+    }
+  }
+);
+
 const blogSlice = createSlice({
   name: "blog",
   initialState,
@@ -96,6 +125,21 @@ const blogSlice = createSlice({
         //   state.blogLists = action.payload.blogs;
       })
       .addCase(createBlogAction.rejected, (state, action) => {
+        state.isLoading = false;
+        //   state.blogLists = [];
+      });
+
+    // update blog
+    builder
+      .addCase(updateBlogAction.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(updateBlogAction.fulfilled, (state, action) => {
+        state.isLoading = false;
+        //   state.blogLists = action.payload.blogs;
+        state.blog = action.payload.blog;
+      })
+      .addCase(updateBlogAction.rejected, (state, action) => {
         state.isLoading = false;
         //   state.blogLists = [];
       });

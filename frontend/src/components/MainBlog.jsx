@@ -94,8 +94,8 @@ const BlogPost = ({ blog }) => {
         </div>
         <div className="col-span-2">
           <h1 className="text-xl font-bold">{blog.title}</h1>
-          <div className="flex sm:flex-row flex-col items-center gap-3 text-gray-600 my-1 text-sm">
-            <p>{blog.author.username}</p>
+          <div className="flex sm:flex-row flex-col  sm:items-center items-start gap-3 text-gray-600 my-1 text-sm">
+            <p className="sm:text-left text-center">{blog.author.username}</p>
             <div className="hidden sm:flex gap-2">
               <p>{new Date(blog.createdAt).toLocaleDateString()}</p>
               <p>{new Date(blog.createdAt).toLocaleTimeString()}</p>
