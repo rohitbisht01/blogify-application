@@ -11,6 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const MainBlog = () => {
   const dispatch = useDispatch();
@@ -74,7 +75,7 @@ const BlogPost = ({ blog }) => {
   return (
     <div
       onClick={() => navigate(`/blog/${blog._id}`)}
-      className="my-10 cursor-pointer"
+      className="my-5 cursor-pointer"
       style={{
         height: 200,
       }}
@@ -94,16 +95,29 @@ const BlogPost = ({ blog }) => {
         </div>
         <div className="col-span-2">
           <h1 className="text-xl font-bold">{blog.title}</h1>
-          <div className="flex sm:flex-row flex-col  sm:items-center items-start gap-3 text-gray-600 my-1 text-sm">
-            <p className="sm:text-left text-center">{blog.author.username}</p>
-            <div className="hidden sm:flex gap-2">
-              <p>{new Date(blog.createdAt).toLocaleDateString()}</p>
-              <p>{new Date(blog.createdAt).toLocaleTimeString()}</p>
-            </div>
+
+          <div className="h-18 mt-2">
+            <p className="line-clamp-3">{blog.summary}</p>
           </div>
 
-          <div className="h-16">
-            <p className="line-clamp-3">{blog.summary}</p>
+          <div className="flex flex-row sm:items-center items-start gap-3 text-gray-600 mt-2 text-sm">
+            <Avatar className="">
+              <AvatarImage src="" alt="@shadcn" />
+              <AvatarFallback>
+                {blog.author.username.slice(0, 1).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="flex flex-col text-sm">
+              <p className="">{blog.author.username}</p>
+              <p>
+                {new Date(blog.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
           </div>
         </div>
       </div>

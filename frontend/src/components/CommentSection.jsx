@@ -23,7 +23,14 @@ const CommentSection = ({ comment, onDelete, onEdit }) => {
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-col text-sm text-gray-500">
             <div>{comment.user.username}</div>
-            <div>{new Date(comment.createdAt).toLocaleDateString()}</div>
+            <div>
+              {" "}
+              {new Date(comment.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </div>
           </div>
 
           {isCommentOwner && (

@@ -169,7 +169,8 @@ const userSlice = createSlice({
       .addCase(getUserBlogsAction.fulfilled, (state, action) => {
         state.isLoading = false;
         // state.totalBlogs = action.payload.totalBlogs;
-        state.blogs = action.payload.blogs;
+        state.blogs =
+          action.payload && action.payload.blogs ? action.payload.blogs : [];
       })
       .addCase(getUserBlogsAction.rejected, (state, action) => {
         state.isLoading = false;

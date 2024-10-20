@@ -14,6 +14,8 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import CreateBlog from "./CreateBlog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { countWords } from "@/lib/helper";
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -112,14 +114,45 @@ const BlogDetail = () => {
       ) : (
         <>
           <div className="flex flex-col gap-4 items-center justify-center">
-            <h1 className="text-2xl font-bold">{blog.title}</h1>
-            <div className="-mt-2 flex flex-col sm:flex-col md:flex-row items-center justify-center gap-2 text-sm text-gray-500">
-              <p>{blog.author.username}</p>
-              <p>{new Date(blog.author.createdAt).toLocaleDateString()}</p>
+            <div className="flex gap-5">
+              <h1 className="text-2xl font-bold">{blog.title}</h1>
+              {isBlogOwner && (
+                <Button
+                  variant="outline"
+                  className=""
+                  onClick={() => handleEditBlog(blog)}
+                >
+                  Edit Blog
+                </Button>
+              )}
             </div>
-            {isBlogOwner && (
-              <Button onClick={() => handleEditBlog(blog)}>Edit Blog</Button>
-            )}
+
+            <div className="-mt-2 flex flex-col sm:flex-col md:flex-row items-center justify-center gap-4 text-sm text-gray-500">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src="" alt="@shadcn" />
+                <AvatarFallback>
+                  {blog.author.username.slice(0, 1).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col text-sm">
+                <p className="font-semibold text-gray-700">
+                  Written by {blog.author.username}
+                </p>
+                <div className="flex flex-row gap-2">
+                  <p className="border border-gray-300 p-1 rounded-md bg-gray-100 hover:bg-gray-200 transition duration-200">
+                    {new Date(blog.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                  <p className="border border-gray-300 p-1 rounded-md bg-gray-100 hover:bg-gray-200 transition duration-200">
+                    {countWords(blog.content)} words
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <p className="">{blog.summary}</p>
             <img src={blog.cover} alt={blog.title} loading="lazy" />
             <div

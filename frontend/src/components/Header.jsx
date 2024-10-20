@@ -57,6 +57,8 @@ const Header = () => {
       });
   };
 
+  // console.log(user);
+
   if (isLoading) return <Loader />;
 
   return (
@@ -118,7 +120,16 @@ const Header = () => {
             <div className="flex items-center gap-5">
               {user.username}
               {/* <Button
-                onClick={() => navigate(`/blogs/${user.id}`)}
+                onClick={() => {
+                  console.log(user);
+
+                  if (user && (user.id || user._id)) {
+                    const userId = user.id ? user.id : user._id;
+                    navigate(`/blogs/${userId}`);
+                  } else {
+                    toast.error("User not found.");
+                  }
+                }}
                 variant="outline"
               >
                 My Blogs

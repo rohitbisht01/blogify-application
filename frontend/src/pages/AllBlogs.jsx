@@ -1,4 +1,5 @@
 import Loader from "@/components/Loader";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Pagination,
@@ -22,6 +23,8 @@ const AllBlogs = () => {
   //   const navigate = useNavigate();
   //   const [page, setPage] = useState(1);
   //   const totalPages = Math.ceil(totalBlogs / 3);
+
+  // console.log(id, typeof id);
 
   useEffect(() => {
     // Only fetch blogs if not already loaded
@@ -66,15 +69,34 @@ const AllBlogs = () => {
         </h1>
       </div>
 
-      {blogs.map((blog) => {
-        return (
-          <BlogComponent
-            blog={blog}
-            key={blog._id}
-            onBlogDelete={handleDeleteBlog}
-          />
-        );
-      })}
+      {(blogs === null || blogs === undefined || blogs.length === 0) && (
+        <div className="flex flex-col items-center justify-center h-full p-4 text-center">
+          <h2 className="text-lg font-semibold text-gray-700">
+            No Blogs Written Yet
+          </h2>
+          <p className="text-gray-500">
+            It seems there are no blogs available at the moment.
+          </p>
+          <p className="text-gray-500">Be the first to share your thoughts!</p>
+          <div className="mt-4">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">
+              Write a Blog
+            </button>
+          </div>
+        </div>
+      )}
+
+      {blogs &&
+        blogs.length > 0 &&
+        blogs.map((blog) => {
+          return (
+            <BlogComponent
+              blog={blog}
+              key={blog._id}
+              onBlogDelete={handleDeleteBlog}
+            />
+          );
+        })}
       {/* <div className="my-6">
         <Pagination>
           <PaginationContent>
@@ -110,7 +132,7 @@ const BlogComponent = ({ blog, onBlogDelete }) => {
   return (
     <div
       onClick={() => navigate(`/blog/${blog._id}`)}
-      className="my-10 cursor-pointer"
+      className="my-5 cursor-pointer"
       style={{
         height: 200,
       }}
@@ -130,16 +152,29 @@ const BlogComponent = ({ blog, onBlogDelete }) => {
         </div>
         <div className="col-span-2">
           <h1 className="text-xl font-bold">{blog.title}</h1>
-          <div className="flex sm:flex-row flex-col  sm:items-center items-start gap-3 text-gray-600 my-1 text-sm">
-            <p className="sm:text-left text-center">{blog.author.username}</p>
-            <div className="hidden sm:flex gap-2">
-              <p>{new Date(blog.createdAt).toLocaleDateString()}</p>
-              <p>{new Date(blog.createdAt).toLocaleTimeString()}</p>
-            </div>
+
+          <div className="h-18 mt-2">
+            <p className="line-clamp-3">{blog.summary}</p>
           </div>
 
-          <div className="h-16">
-            <p className="line-clamp-3">{blog.summary}</p>
+          <div className="flex flex-row sm:items-center items-start gap-3 text-gray-600 mt-2 text-sm">
+            <Avatar className="">
+              <AvatarImage src="" alt="@shadcn" />
+              <AvatarFallback>
+                {blog.author.username.slice(0, 1).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="flex flex-col text-sm">
+              <p className="">{blog.author.username}</p>
+              <p>
+                {new Date(blog.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-4 justify-end mt-4 sm:mt-8">
@@ -150,13 +185,13 @@ const BlogComponent = ({ blog, onBlogDelete }) => {
             >
               Edit
             </Button> */}
-            <Button
+            {/* <Button
               variant="outline"
               size="sm"
               onClick={() => onBlogDelete(blog._id)}
             >
               Delete
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
