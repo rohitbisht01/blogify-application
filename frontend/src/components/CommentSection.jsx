@@ -5,7 +5,6 @@ import Loader from "./Loader";
 
 const CommentSection = ({ comment, onDelete, onEdit }) => {
   const { user, isLoading } = useSelector((state) => state.user);
-
   const isCommentOwner = user && comment.user._id === user.id;
 
   if (isLoading) return <Loader />;
