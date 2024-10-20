@@ -1,6 +1,6 @@
 # Blogify
 
-![alt text](image.png)
+![image](https://github.com/user-attachments/assets/06ecb8a3-438c-4e9b-b64b-a630f4fb62e8)
 
 ### User Features:
 
