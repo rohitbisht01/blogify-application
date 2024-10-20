@@ -94,6 +94,28 @@ export const updateBlogAction = createAsyncThunk(
   }
 );
 
+// delete a blog action
+export const deleteBlogAction = createAsyncThunk(
+  "/blog/id/delete",
+  async (id, { rejectWithValue }) => {
+    const token = sessionStorage.getItem("token");
+    try {
+      const response = await axios.delete(`${url}/api/v1/blog/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Cache-Control": "no-store,no-cache,must-revalidate,proxy-revalidate",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log("Error deleting blog by id", error);
+      return rejectWithValue({
+        message: error.response?.data?.message || "Blog deleting failed",
+      });
+    }
+  }
+);
+
 const blogSlice = createSlice({
   name: "blog",
   initialState,
@@ -156,6 +178,18 @@ const blogSlice = createSlice({
       .addCase(getBlogByIdAction.rejected, (state, action) => {
         state.isLoading = false;
         state.blog = null;
+      });
+
+    // delete blog
+    builder
+      .addCase(deleteBlogAction.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteBlogAction.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteBlogAction.rejected, (state, action) => {
+        state.isLoading = false;
       });
   },
 });

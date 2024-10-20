@@ -4,6 +4,7 @@ const {
   userLogin,
   userLogout,
   authMiddleware,
+  getBlogsByUser,
 } = require("../controllers/user");
 const router = express.Router();
 
@@ -17,6 +18,7 @@ router.get("/profile", authMiddleware, (req, res) => {
   });
 });
 
+router.get("/blogs/:userId", getBlogsByUser);
 router.post("/register", registerUser);
 router.post("/login", userLogin);
 router.get("/logout", userLogout);

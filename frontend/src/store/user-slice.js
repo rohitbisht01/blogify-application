@@ -6,7 +6,9 @@ const initialState = {
   isAuthenticated: false,
   isLoading: true,
   user: null,
+  blogs: [],
   token: null,
+  totalBlogs: 0,
 };
 
 // Authorizing user action
@@ -71,6 +73,19 @@ export const logoutAction = createAsyncThunk("/logout", async () => {
     console.log("Logout failed", error);
   }
 });
+
+// Get user blogs action
+export const getUserBlogsAction = createAsyncThunk(
+  "/user-blogs",
+  async (userId) => {
+    try {
+      const response = await axios.get(`${url}/api/v1/user/blogs/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.log("Logout failed", error);
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: "user",
@@ -144,6 +159,21 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
+      });
+
+    // user blogs
+    builder
+      .addCase(getUserBlogsAction.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserBlogsAction.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // state.totalBlogs = action.payload.totalBlogs;
+        state.blogs = action.payload.blogs;
+      })
+      .addCase(getUserBlogsAction.rejected, (state, action) => {
+        state.isLoading = false;
+        // state.totalBlogs = 0;
       });
   },
 });

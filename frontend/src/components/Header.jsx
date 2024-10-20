@@ -117,6 +117,12 @@ const Header = () => {
           {isAuthenticated ? (
             <div className="flex items-center gap-5">
               {user.username}
+              {/* <Button
+                onClick={() => navigate(`/blogs/${user.id}`)}
+                variant="outline"
+              >
+                My Blogs
+              </Button> */}
               {pathname === "/create-blog" ? null : (
                 <Button
                   onClick={() => navigate("/create-blog")}

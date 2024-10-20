@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Blog = require("../models/blog");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -184,10 +185,48 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
+const getBlogsByUser = async (req, res) => {
+  const { userId } = req.params;
+  // const page = parseInt(req.query.page) || 1;
+
+  // const totalBlogs = await Blog.countDocuments({ author: userId });
+  // const dataPerPage = 3;
+  // const skip = (page - 1) * dataPerPage;
+
+  try {
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "Fields are missing",
+      });
+    }
+
+    const blogs = await Blog.find({ author: userId }).populate(
+      "author",
+      "username email"
+    );
+    // .skip(skip)
+    // .limit(dataPerPage);
+
+    res.status(200).json({
+      success: true,
+      blogs,
+      // totalBlogs,
+    });
+  } catch (error) {
+    console.error("Error getting blogs: ", error);
+    return res.status(401).json({
+      success: false,
+      message: "Error getting blogs",
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   userLogin,
   userLogout,
   // profile,
   authMiddleware,
+  getBlogsByUser,
 };

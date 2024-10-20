@@ -1,5 +1,7 @@
 # Blogify
 
+![alt text](image.png)
+
 ### User Features:
 
 - **User Authentication**: Secure login and logout using JWT.
@@ -53,5 +55,6 @@
 
    ```
    # For Frontend
+   cd frontend
    npm run dev
    ```

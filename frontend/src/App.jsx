@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import MainBlog from "./components/MainBlog";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +7,7 @@ import { checkAuthentication } from "./store/user-slice";
 import CreateBlog from "./pages/CreateBlog";
 import BlogDetail from "./pages/BlogDetail";
 import Loader from "./components/Loader";
+import AllBlogs from "./pages/AllBlogs";
 
 const App = () => {
   const { isLoading } = useSelector((state) => state.user);
@@ -25,6 +26,8 @@ const App = () => {
         <Route index element={<MainBlog />} />
         <Route path="/create-blog" element={<CreateBlog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
+        {/* <Route path="/blogs/:id" element={<AllBlogs />} /> */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Route>
     </Routes>
   );

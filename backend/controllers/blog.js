@@ -165,4 +165,45 @@ const updateBlog = async (req, res) => {
   }
 };
 
-module.exports = { getAllBlogs, createBlog, blogDetails, updateBlog };
+const deleteBlog = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      message: "id not defined",
+    });
+  }
+
+  try {
+    const blog = await Blog.findById(id);
+    console.log(blog);
+
+    if (!blog) {
+      return res.status(400).json({
+        success: false,
+        message: "Blog does not exists",
+      });
+    }
+
+    await Blog.findByIdAndDelete(id);
+    res.status(200).json({
+      success: true,
+      message: "Blog deleted",
+    });
+  } catch (error) {
+    console.log("Error deleting blog", error);
+    res.status(400).json({
+      success: false,
+      message: "Error deleting blog",
+    });
+  }
+};
+
+module.exports = {
+  getAllBlogs,
+  createBlog,
+  blogDetails,
+  updateBlog,
+  deleteBlog,
+};

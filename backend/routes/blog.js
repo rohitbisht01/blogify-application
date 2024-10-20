@@ -4,6 +4,7 @@ const {
   createBlog,
   blogDetails,
   updateBlog,
+  deleteBlog,
 } = require("../controllers/blog");
 const { authMiddleware } = require("../controllers/user");
 const { upload } = require("../utils/cloudinary");
@@ -18,5 +19,6 @@ router.put(
   updateBlog
 );
 router.get("/:id", blogDetails);
+router.delete("/:id", deleteBlog);
 
 module.exports = router;
