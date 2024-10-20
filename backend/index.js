@@ -1,6 +1,7 @@
 const express = require("express");
 const blogRoute = require("./routes/blog");
 const userRoute = require("./routes/user");
+const commentRoute = require("./routes/comment");
 const connectDb = require("./db/connectDb");
 const cookieParser = require("cookie-parser");
 const path = require("path");
@@ -20,6 +21,7 @@ app.use(cors());
 
 app.use("/api/v1/blog", blogRoute);
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/comment", commentRoute);
 
 // Serve frontend files in production
 if (process.env.NODE_ENV === "production") {

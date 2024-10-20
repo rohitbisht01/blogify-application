@@ -1,16 +1,36 @@
 import { getAllBlogsAction } from "@/store/blog-slice";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "./Loader";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const MainBlog = () => {
   const dispatch = useDispatch();
-  const { blogLists, isLoading } = useSelector((state) => state.blog);
+  const { blogLists, totalBlogs, isLoading } = useSelector(
+    (state) => state.blog
+  );
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(totalBlogs / 3);
 
   useEffect(() => {
-    dispatch(getAllBlogsAction());
-  }, [dispatch]);
+    dispatch(getAllBlogsAction(page));
+  }, [dispatch, page]);
+
+  const handlePageChange = (status) => {
+    if (status === "prev") {
+      setPage((page) => (page > 1 ? page - 1 : page));
+    } else if (status === "next") {
+      setPage((page) => (page < totalPages ? page + 1 : page));
+    }
+  };
 
   if (isLoading) return <Loader />;
 
@@ -19,12 +39,38 @@ const MainBlog = () => {
       {blogLists.map((blog) => {
         return <BlogPost key={blog._id} blog={blog} />;
       })}
+      <div className="my-6">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={() => handlePageChange("prev")}
+              />
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationLink href="#" isActive>
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={() => handlePageChange("next")}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   );
 };
 
 const BlogPost = ({ blog }) => {
   const navigate = useNavigate();
+
   return (
     <div
       onClick={() => navigate(`/blog/${blog._id}`)}

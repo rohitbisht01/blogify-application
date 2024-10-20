@@ -6,17 +6,24 @@ const initialState = {
   isLoading: false,
   blogLists: [],
   blog: null,
+  totalBlogs: 0,
 };
 
 // all blogs action
-export const getAllBlogsAction = createAsyncThunk("/blogs", async () => {
-  try {
-    const response = await axios.get(`${url}/api/v1/blog`);
-    return response.data;
-  } catch (error) {
-    console.log("Error getting blogs", error);
+export const getAllBlogsAction = createAsyncThunk(
+  "/blogs",
+  async (page, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${url}/api/v1/blog?page=${page}`);
+      return response.data;
+    } catch (error) {
+      console.log("Error getting blogs", error);
+      return rejectWithValue({
+        message: error.response?.data?.message || "Getting blogs failed",
+      });
+    }
   }
-});
+);
 
 // create blog action
 export const createBlogAction = createAsyncThunk(
@@ -70,11 +77,13 @@ const blogSlice = createSlice({
       })
       .addCase(getAllBlogsAction.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.totalBlogs = action.payload.totalBlogs;
         state.blogLists = action.payload.blogs;
       })
       .addCase(getAllBlogsAction.rejected, (state, action) => {
         state.isLoading = false;
         state.blogLists = [];
+        state.totalBlogs = 0;
       });
 
     // create blog

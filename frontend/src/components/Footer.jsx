@@ -4,11 +4,11 @@ import { Separator } from "./ui/separator";
 const socialLinks = [
   {
     label: "About",
-    href: "https://github.com/rohitbisht01/mern-blog-application",
+    href: "https://github.com/rohitbisht01/blogify-application",
   },
   {
     label: "Github",
-    href: "https://github.com/rohitbisht01/mern-blog-application",
+    href: "https://github.com/rohitbisht01/blogify-application",
   },
   {
     label: "Contact",

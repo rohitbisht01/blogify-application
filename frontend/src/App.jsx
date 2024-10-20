@@ -6,11 +6,10 @@ import { useEffect } from "react";
 import { checkAuthentication } from "./store/user-slice";
 import CreateBlog from "./pages/CreateBlog";
 import BlogDetail from "./pages/BlogDetail";
+import Loader from "./components/Loader";
 
 const App = () => {
-  const { isAuthenticated, isLoading, user } = useSelector(
-    (state) => state.user
-  );
+  const { isLoading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,7 +17,7 @@ const App = () => {
     dispatch(checkAuthentication(token));
   }, [dispatch]);
 
-  if (isLoading) return <div>loading..</div>;
+  if (isLoading) return <Loader />;
 
   return (
     <Routes>

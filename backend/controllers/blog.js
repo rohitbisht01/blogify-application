@@ -3,15 +3,24 @@ const { uploadToCloudinary } = require("../utils/cloudinary");
 
 const getAllBlogs = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+
+    const totalBlogs = await Blog.countDocuments();
+    const dataPerPage = 3;
+    const skip = (page - 1) * dataPerPage;
+
     const blogs = await Blog.find({})
       .populate("author", "username email createdAt")
       .sort({
         createdAt: -1,
-      });
+      })
+      .skip(skip)
+      .limit(dataPerPage);
 
     res.status(200).json({
       success: true,
       blogs,
+      totalBlogs,
     });
   } catch (error) {
     console.log("Error getting all blogs", error);

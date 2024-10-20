@@ -155,7 +155,7 @@ const authMiddleware = async (req, res, next) => {
 
   // const tokenFromCookie = req.cookies.token;
   // console.log("tokenFromCookie", tokenFromCookie);
-  console.log(authHeader);
+  // console.log(authHeader);
 
   if (!token)
     return res.status(401).json({
