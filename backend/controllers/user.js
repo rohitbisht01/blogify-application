@@ -187,11 +187,6 @@ const authMiddleware = async (req, res, next) => {
 
 const getBlogsByUser = async (req, res) => {
   const { userId } = req.params;
-  // const page = parseInt(req.query.page) || 1;
-
-  // const totalBlogs = await Blog.countDocuments({ author: userId });
-  // const dataPerPage = 3;
-  // const skip = (page - 1) * dataPerPage;
 
   try {
     if (!userId) {
@@ -205,13 +200,10 @@ const getBlogsByUser = async (req, res) => {
       "author",
       "username email"
     );
-    // .skip(skip)
-    // .limit(dataPerPage);
 
     res.status(200).json({
       success: true,
       blogs,
-      // totalBlogs,
     });
   } catch (error) {
     console.error("Error getting blogs: ", error);

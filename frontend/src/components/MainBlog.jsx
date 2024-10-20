@@ -100,7 +100,7 @@ const BlogPost = ({ blog }) => {
             <p className="line-clamp-3">{blog.summary}</p>
           </div>
 
-          <div className="flex flex-row sm:items-center items-start gap-3 text-gray-600 mt-2 text-sm">
+          <div className="flex flex-row sm:items-center items-start gap-3 text-gray-600 mt-2 text-xs">
             <Avatar className="">
               <AvatarImage src="" alt="@shadcn" />
               <AvatarFallback>

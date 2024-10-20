@@ -26,7 +26,8 @@ const App = () => {
         <Route index element={<MainBlog />} />
         <Route path="/create-blog" element={<CreateBlog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
-        <Route path="/blogs/:id" element={<AllBlogs />} />
+        {/* <Route path="/blogs/:id" element={<AllBlogs />} /> */}
+        <Route path="/user-blogs" element={<AllBlogs />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Route>
     </Routes>

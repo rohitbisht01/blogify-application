@@ -47,6 +47,7 @@ const Header = () => {
     dispatch(logoutAction())
       .then((response) => {
         if (response.payload.success) {
+          navigate("/");
           toast.success("Successfull logged out");
         } else {
           toast.error("Logout failed");
@@ -83,8 +84,18 @@ const Header = () => {
             <DropdownMenuContent>
               {isAuthenticated ? (
                 <>
-                  <DropdownMenuItem className="cursor-pointer">
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => navigate("/user-blogs")}
+                  >
                     {user.username}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => navigate("/user-blogs")}
+                  >
+                    All Blogs
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -119,21 +130,14 @@ const Header = () => {
           {isAuthenticated ? (
             <div className="flex items-center gap-5">
               {user.username}
-              {/* <Button
+              <Button
                 onClick={() => {
-                  console.log(user);
-
-                  if (user && (user.id || user._id)) {
-                    const userId = user.id ? user.id : user._id;
-                    navigate(`/blogs/${userId}`);
-                  } else {
-                    toast.error("User not found.");
-                  }
+                  navigate(`/user-blogs`);
                 }}
                 variant="outline"
               >
                 My Blogs
-              </Button> */}
+              </Button>
               {pathname === "/create-blog" ? null : (
                 <Button
                   onClick={() => navigate("/create-blog")}

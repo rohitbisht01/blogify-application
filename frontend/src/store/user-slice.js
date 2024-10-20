@@ -8,7 +8,6 @@ const initialState = {
   user: null,
   blogs: [],
   token: null,
-  totalBlogs: 0,
 };
 
 // Authorizing user action
@@ -168,7 +167,7 @@ const userSlice = createSlice({
       })
       .addCase(getUserBlogsAction.fulfilled, (state, action) => {
         state.isLoading = false;
-        // state.totalBlogs = action.payload.totalBlogs;
+
         state.blogs =
           action.payload && action.payload.blogs ? action.payload.blogs : [];
       })

@@ -17,45 +17,32 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
 const AllBlogs = () => {
-  const { id } = useParams();
+  const navigate = useNavigate();
   const { blogs, isLoading, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  //   const navigate = useNavigate();
-  //   const [page, setPage] = useState(1);
-  //   const totalPages = Math.ceil(totalBlogs / 3);
-
-  // console.log(id, typeof id);
 
   useEffect(() => {
     // Only fetch blogs if not already loaded
-    if (id && blogs.length === 0) {
-      dispatch(getUserBlogsAction(id));
+    if (user && user._id && blogs.length === 0) {
+      dispatch(getUserBlogsAction(user._id));
     }
-  }, [id, blogs, dispatch]);
+  }, [user, blogs, dispatch]);
 
-  //   const handlePageChange = (status) => {
-  //     if (status === "prev") {
-  //       setPage((page) => (page > 1 ? page - 1 : page));
-  //     } else if (status === "next") {
-  //       setPage((page) => (page < totalPages ? page + 1 : page));
-  //     }
-  //   };
+  // const handleDeleteBlog = (blogId) => {
+  //   dispatch(deleteBlogAction(blogId))
+  //     .then((response) => {
+  //       if (response.payload.success) {
+  //         toast.success("blog deleted");
+  //         //   dispatch(getUserBlogsAction(id));
+  //         //   navigate("/");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       toast.error("Error deleting blog");
+  //     });
+  // };
 
-  const handleDeleteBlog = (blogId) => {
-    console.log(blogId);
-
-    dispatch(deleteBlogAction(blogId))
-      .then((response) => {
-        if (response.payload.success) {
-          toast.success("blog deleted");
-          //   dispatch(getUserBlogsAction(id));
-          //   navigate("/");
-        }
-      })
-      .catch((error) => {
-        toast.error("Error deleting blog");
-      });
-  };
+  if (!user) return;
 
   if (isLoading) {
     return <Loader />;
@@ -69,7 +56,7 @@ const AllBlogs = () => {
         </h1>
       </div>
 
-      {(blogs === null || blogs === undefined || blogs.length === 0) && (
+      {(blogs === null || blogs.length === 0) && (
         <div className="flex flex-col items-center justify-center h-full p-4 text-center">
           <h2 className="text-lg font-semibold text-gray-700">
             No Blogs Written Yet
@@ -79,9 +66,12 @@ const AllBlogs = () => {
           </p>
           <p className="text-gray-500">Be the first to share your thoughts!</p>
           <div className="mt-4">
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">
+            <Button
+              className="px-4 py-2  text-white rounded-md bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+              onClick={() => navigate("/create-blog")}
+            >
               Write a Blog
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -90,11 +80,7 @@ const AllBlogs = () => {
         blogs.length > 0 &&
         blogs.map((blog) => {
           return (
-            <BlogComponent
-              blog={blog}
-              key={blog._id}
-              onBlogDelete={handleDeleteBlog}
-            />
+            <BlogComponent blog={blog} key={blog._id} onBlogDelete={() => {}} />
           );
         })}
       {/* <div className="my-6">
